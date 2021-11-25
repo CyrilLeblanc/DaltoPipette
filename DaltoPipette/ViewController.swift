@@ -79,7 +79,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let pixel = Pixel(r: 196, g: 200, b: 198)
+        let pixel = Pixel(r: 20, g: 23, b: 198)
         pixel.dico()
     }
 
