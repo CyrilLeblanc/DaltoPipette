@@ -13,12 +13,15 @@ class Pixel {
     var g: Int
     var b: Int
     
+    
+    //on prend en argument de classe des UInt8 il converti tout seul en Int
     init(r: UInt8, g: UInt8, b: UInt8) {
         self.r = Int(r)
         self.g = Int(g)
         self.b = Int(b)
     }
-
+    
+    //Dictionnaire des couleurs reconnaissables
     var couleur = [ "rouge": [255, 0, 0],
                     "bleu": [0, 0, 255],
                     "vert": [0, 255, 0],
@@ -39,6 +42,7 @@ class Pixel {
                     "vert argile": [131, 166, 151]
                     ]
     
+    //methode à appeler pour rendre le nom de la couleur
     func dico() -> String {
         var color: String = "none"
         if r >= 230 && g >= 230 && b >= 230 {
@@ -93,6 +97,8 @@ class Pixel {
 // ACCUEIL
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
+    @IBOutlet weak var selectPicture: UIButton!
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -101,8 +107,14 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //censé faire des bords arrondis au bouton de selection de l'image (mais ça ne fonctionne pas...) :'(
+        self.selectPicture?.layer.cornerRadius = 10
+        self.selectPicture?.clipsToBounds = true
     }
     
+    
+    //Permet d'afficher le sélecteur d'image depuis la galerie
     @IBAction func choosePicture() {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
@@ -110,6 +122,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         self.present(imagePicker, animated: true)
     }
     
+    
+    //récupère l'image et passe à la page suivante ! :)
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
         let image = info[.originalImage] as! UIImage
@@ -133,62 +147,98 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 class ViewControllerPipette: UIViewController{
     
     var image: UIImage!
+    var mode: String!
     
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var colorLabel: UILabel!
+    @IBOutlet weak var zoneButton: UIImageView!
+    @IBOutlet weak var pipetteButton: UIImageView!
+    var tap1: CGPoint!
+    var tap2: CGPoint!
     
+    
+    //données initiales de la page dont l'image transférée depuis la page précédente
     override func viewDidLoad() {
         super.viewDidLoad()
+        mode = "pipette"
+        pipetteButton.isHighlighted = true
         imageView.image = image
         
-        let tap = UITapGestureRecognizer(target: self, action: #selector(getPixel(sender:)))
+        //tap la position où l'on clique sur l'image
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleClick(sender:)))
         tap.numberOfTapsRequired = 1
         view.addGestureRecognizer(tap)
     }
     
+    //retour à la page accueil/précédente
     @IBAction func retour(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
     @IBAction func zone(_ sender: Any) {
-        print("zone")
+        pipetteButton.isHighlighted = false
+        zoneButton.isHighlighted = true;
+        mode = "zone"
+        
+        image.cgImage?.cropping(to: CGRect(x: 10, y: 10, width: 50, height: 50))
+        
     }
     @IBAction func point(_ sender: Any) {
-        print("point")
+        pipetteButton.isHighlighted = true
+        zoneButton.isHighlighted = false;
+        mode = "pipette"
     }
     
-    @objc func getPixel(sender: UITapGestureRecognizer){
-        let touchPoint = sender.location(in: self.imageView)
-        
-        let colorResult = self.imageView.image?.cgImage?.colors(p: CGPoint(x: touchPoint.x, y: touchPoint.y))
-        
-        print(colorResult, Pixel(r: UInt8(colorResult!.red), g: UInt8(colorResult!.green), b: UInt8(colorResult!.blue)).dico())
-        
-        let pix: Pixel = Pixel(r: UInt8(colorResult!.red), g: UInt8(colorResult!.green), b: UInt8(colorResult!.blue))
-        
-        self.colorLabel.text = pix.dico()
-        
-        
-        self.colorLabel.backgroundColor = UIColor.init(red: pix.getR(), green: pix.getG(), blue: pix.getB(), alpha: 1)
-        
-        let DynamicView = UIView(frame: CGRect(x: self.imageView.frame.origin.x + touchPoint.x, y: self.imageView.frame.origin.y + touchPoint.y, width: 5, height: 5))
-        DynamicView.layer.cornerRadius = 2.5
-        DynamicView.layer.borderWidth = 2.5
-        //self.view.addSubview(DynamicView)
+    func setDetectedColor(name: String, pixel: Pixel){
+        //écrit le nom de la couleur dans le label
+        self.colorLabel.text = name
+        //remplace le fond du label par la couleur détectée
+        self.colorLabel.backgroundColor = UIColor.init(red: pixel.getR(), green: pixel.getG(), blue: pixel.getB(), alpha: 1)
     }
-}
-extension UIImage {
-    func getPixelColor(pos: CGPoint) -> Pixel {
-        
-        let pixelData = self.cgImage!.dataProvider!.data
-        let data: UnsafePointer<UInt8> = CFDataGetBytePtr(pixelData)
-        
-        let pixelInfo: Int = ((Int(pos.y)) * Int(pos.x)) * 4
-        
-        return Pixel(r: data[pixelInfo], g: data[pixelInfo+1], b: data[pixelInfo+2])
+    
+    // gère le click sur l'image
+    @objc func handleClick(sender: UITapGestureRecognizer){
+        let touchPoint = sender.location(in: self.imageView)
+        if (mode == "pipette"){
+            // ==== Dans le mode PIPETTE
+            
+            let colorResult = self.imageView.image?.cgImage?.colors(p: CGPoint(x: touchPoint.x, y: touchPoint.y))
+            let pix: Pixel = Pixel(r: UInt8(colorResult!.red), g: UInt8(colorResult!.green), b: UInt8(colorResult!.blue))
+            
+            // met à jour l'affichage en mettant le nom de la couleur
+            self.setDetectedColor(name: pix.dico(), pixel: pix)
+            
+            //DynamicView affiche un point noir où l'on clique
+            let DynamicView = UIView(frame: CGRect(x: self.imageView.frame.origin.x + touchPoint.x, y: self.imageView.frame.origin.y + touchPoint.y, width: 5, height: 5))
+            DynamicView.layer.cornerRadius = 2.5
+            DynamicView.layer.borderWidth = 2.5
+            //self.view.addSubview(DynamicView)
+        } else if (mode == "zone"){
+            // === Dans le mode ZONE
+            if (tap1 == nil){
+                // Pour le premier point
+                tap1 = CGPoint(x: touchPoint.x, y: touchPoint.y)
+            } else {
+                // Pour le second point
+                tap2 = CGPoint(x: touchPoint.x, y: touchPoint.y)
+                print("pt1 : ", tap1.x, tap1.y, "\tpt2:", tap2.x, tap2.y)
+                
+                // TODO : récupérer la zone définie et récupérer la couleur moyenne pour l'afficher avec la méthode setDetectedColor()
+                
+                // créer le tableau de CGColor pour la zone donnée
+                var nbColor: Int = 0
+                
+                // déterminer la moyenne
+                
+                tap1 = nil
+                tap2 = nil
+            }
+        }
     }
 }
 
 extension CGImage {
+    
+    //renvoie le code rgb pour une position (CGPoint donnée)
     func colors(p: CGPoint) -> (red: Int, green: Int, blue: Int)? {
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         let bytesPerPixel = 4
