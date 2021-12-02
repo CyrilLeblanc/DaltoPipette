@@ -9,7 +9,7 @@ import UIKit
 import AVFoundation
 
 // PIPETTE
-class ViewControllerPipette: UIViewController, AVSpeechSynthesizerDelegate{
+class ViewControllerPipette: UIViewController, AVSpeechSynthesizerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     var image: UIImage!
     var mode: String!
@@ -39,6 +39,26 @@ class ViewControllerPipette: UIViewController, AVSpeechSynthesizerDelegate{
     @IBAction func retour(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
+    
+    //Selectionner une nouvelle image
+    @IBAction func selectionImage(_sender: Any) {
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.sourceType = .photoLibrary
+        self.present(imagePicker, animated: true)
+    }
+    
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        DispatchQueue.main.async {
+            self.dismiss(animated: true, completion: nil)
+            let image = info[.originalImage] as! UIImage
+            self.imageView.image = image
+        }
+    }
+    
+    
     @IBAction func zone(_ sender: Any) {
         pipetteButton.isHighlighted = false
         zoneButton.isHighlighted = true;
