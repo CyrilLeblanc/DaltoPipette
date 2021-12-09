@@ -20,10 +20,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        //censé faire des bords arrondis au bouton de selection de l'image (mais ça ne fonctionne pas...) :'(
-        self.selectPicture?.layer.cornerRadius = 10
-        self.selectPicture?.clipsToBounds = true
     }
     
     

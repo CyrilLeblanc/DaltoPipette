@@ -40,7 +40,7 @@ class ViewControllerPipette: UIViewController, AVSpeechSynthesizerDelegate, UIIm
         self.navigationController?.popViewController(animated: true)
     }
     
-    //Selectionner une nouvelle image
+    //Sélectionner une nouvelle image
     @IBAction func selectionImage(_sender: Any) {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
@@ -110,9 +110,6 @@ class ViewControllerPipette: UIViewController, AVSpeechSynthesizerDelegate, UIIm
                 // Pour le second point
                 tap2 = CGPoint(x: touchPoint.x, y: touchPoint.y)
                 print("pt1 : ", tap1.x, tap1.y, "\tpt2:", tap2.x, tap2.y)
-                
-                // TODO : récupérer la zone définie et récupérer la couleur moyenne pour l'afficher avec la méthode setDetectedColor()
-                
                 // créer le tableau de RGB pour la zone donnée
                 let colors = image.cgImage?.crop(zone: CGRect(x: tap1.x, y: tap1.y, width: (tap2.x - tap1.x), height: (tap2.y - tap1.y)))
                 print("test")
@@ -130,7 +127,7 @@ class ViewControllerPipette: UIViewController, AVSpeechSynthesizerDelegate, UIIm
         for color in colors{
             sum += color
         }
-        return Int(sum / colors.count)
+        return Int(sum / (colors.count + 1))
     }
     
     

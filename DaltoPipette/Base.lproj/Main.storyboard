@@ -251,8 +251,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tJE-yV-t49">
-                                <rect key="frame" x="90" y="398" width="234" height="100"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tJE-yV-t49">
+                                <rect key="frame" x="75" y="290" width="264" height="380"/>
                                 <color key="backgroundColor" red="0.83529411764705885" green="0.83529411764705885" blue="0.83529411764705885" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <state key="normal">
                                     <attributedString key="attributedTitle">
@@ -286,6 +286,7 @@
                         <constraints>
                             <constraint firstItem="e6T-E0-C2W" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="3X0-xD-i14"/>
                             <constraint firstItem="e6T-E0-C2W" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="7Bd-8Q-UGh"/>
+                            <constraint firstItem="tJE-yV-t49" firstAttribute="top" secondItem="e6T-E0-C2W" secondAttribute="bottom" constant="20" id="8x9-rd-RhX"/>
                             <constraint firstItem="b8i-qe-vRd" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="Gux-mf-1ih"/>
                             <constraint firstItem="e6T-E0-C2W" firstAttribute="leading" relation="lessThanOrEqual" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="LHD-3T-zhQ"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="b8i-qe-vRd" secondAttribute="bottom" constant="50" id="QGK-MF-f3G"/>
@@ -293,6 +294,7 @@
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="e6T-E0-C2W" secondAttribute="trailing" constant="10" id="aMg-ki-EpO"/>
                             <constraint firstItem="b8i-qe-vRd" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="0.903382" id="kL5-2s-I9N"/>
                             <constraint firstItem="tJE-yV-t49" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" constant="5" id="nAK-20-9Oj"/>
+                            <constraint firstItem="b8i-qe-vRd" firstAttribute="top" secondItem="tJE-yV-t49" secondAttribute="bottom" constant="20" id="pYj-a5-tDr"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Me9-tc-zDB"/>
